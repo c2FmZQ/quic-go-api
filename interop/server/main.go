@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/quic-go/quic-go"
-	"github.com/quic-go/quic-go/http3"
-	"github.com/quic-go/quic-go/internal/qtls"
-	"github.com/quic-go/quic-go/interop/http09"
-	"github.com/quic-go/quic-go/interop/utils"
+	"github.com/c2FmZQ/quic-go-api"
+	"github.com/c2FmZQ/quic-go-api/http3"
+	"github.com/c2FmZQ/quic-go-api/internal/qtls"
+	"github.com/c2FmZQ/quic-go-api/interop/http09"
+	"github.com/c2FmZQ/quic-go-api/interop/utils"
 )
 
 func main() {

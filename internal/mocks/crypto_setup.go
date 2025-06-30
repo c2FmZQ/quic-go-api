@@ -13,8 +13,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	handshake "github.com/quic-go/quic-go/internal/handshake"
-	protocol "github.com/quic-go/quic-go/internal/protocol"
+	handshake "github.com/c2FmZQ/quic-go-api/internal/handshake"
+	protocol "github.com/c2FmZQ/quic-go-api/internal/protocol"
 	gomock "go.uber.org/mock/gomock"
 )
 

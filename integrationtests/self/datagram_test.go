@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/quic-go/quic-go"
-	quicproxy "github.com/quic-go/quic-go/integrationtests/tools/proxy"
-	"github.com/quic-go/quic-go/internal/wire"
+	"github.com/c2FmZQ/quic-go-api"
+	quicproxy "github.com/c2FmZQ/quic-go-api/integrationtests/tools/proxy"
+	"github.com/c2FmZQ/quic-go-api/internal/wire"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

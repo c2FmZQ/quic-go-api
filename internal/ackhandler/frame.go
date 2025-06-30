@@ -1,7 +1,7 @@
 package ackhandler
 
 import (
-	"github.com/quic-go/quic-go/internal/wire"
+	"github.com/c2FmZQ/quic-go-api/internal/wire"
 )
 
 // FrameHandler handles the acknowledgement and the loss of a frame.

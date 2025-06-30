@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/quic-go/quic-go"
-	"github.com/quic-go/quic-go/internal/handshake"
-	"github.com/quic-go/quic-go/internal/protocol"
-	"github.com/quic-go/quic-go/logging"
+	"github.com/c2FmZQ/quic-go-api"
+	"github.com/c2FmZQ/quic-go-api/internal/handshake"
+	"github.com/c2FmZQ/quic-go-api/internal/protocol"
+	"github.com/c2FmZQ/quic-go-api/logging"
 
 	"github.com/stretchr/testify/require"
 )

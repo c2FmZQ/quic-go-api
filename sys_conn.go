@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/quic-go/quic-go/internal/protocol"
-	"github.com/quic-go/quic-go/internal/utils"
+	"github.com/c2FmZQ/quic-go-api/internal/protocol"
+	"github.com/c2FmZQ/quic-go-api/internal/utils"
 )
 
 type connCapabilities struct {

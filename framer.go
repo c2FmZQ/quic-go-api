@@ -5,12 +5,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/quic-go/quic-go/internal/ackhandler"
-	"github.com/quic-go/quic-go/internal/flowcontrol"
-	"github.com/quic-go/quic-go/internal/protocol"
-	"github.com/quic-go/quic-go/internal/utils/ringbuffer"
-	"github.com/quic-go/quic-go/internal/wire"
-	"github.com/quic-go/quic-go/quicvarint"
+	"github.com/c2FmZQ/quic-go-api/internal/ackhandler"
+	"github.com/c2FmZQ/quic-go-api/internal/flowcontrol"
+	"github.com/c2FmZQ/quic-go-api/internal/protocol"
+	"github.com/c2FmZQ/quic-go-api/internal/utils/ringbuffer"
+	"github.com/c2FmZQ/quic-go-api/internal/wire"
+	"github.com/c2FmZQ/quic-go-api/quicvarint"
 )
 
 const (

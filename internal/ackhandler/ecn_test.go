@@ -3,10 +3,10 @@ package ackhandler
 import (
 	"testing"
 
-	mocklogging "github.com/quic-go/quic-go/internal/mocks/logging"
-	"github.com/quic-go/quic-go/internal/protocol"
-	"github.com/quic-go/quic-go/internal/utils"
-	"github.com/quic-go/quic-go/logging"
+	mocklogging "github.com/c2FmZQ/quic-go-api/internal/mocks/logging"
+	"github.com/c2FmZQ/quic-go-api/internal/protocol"
+	"github.com/c2FmZQ/quic-go-api/internal/utils"
+	"github.com/c2FmZQ/quic-go-api/logging"
 
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"

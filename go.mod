@@ -1,4 +1,4 @@
-module github.com/quic-go/quic-go
+module github.com/c2FmZQ/quic-go-api
 
 go 1.23
 

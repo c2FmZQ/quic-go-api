@@ -13,7 +13,7 @@ import (
 	net "net"
 	reflect "reflect"
 
-	logging "github.com/quic-go/quic-go/logging"
+	logging "github.com/c2FmZQ/quic-go-api/logging"
 	gomock "go.uber.org/mock/gomock"
 )
 

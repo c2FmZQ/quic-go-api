@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/quic-go/quic-go/internal/utils"
+	"github.com/c2FmZQ/quic-go-api/internal/utils"
 
 	"github.com/stretchr/testify/require"
 )
