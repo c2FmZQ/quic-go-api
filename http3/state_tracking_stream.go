@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/c2FmZQ/quic-go-api"
+	quicapi "github.com/c2FmZQ/quic-go-api/api"
 )
 
 const streamDatagramQueueLen = 32
@@ -19,7 +20,7 @@ const streamDatagramQueueLen = 32
 // parent connection, this is done through the streamClearer interface when
 // both the send and receive sides are closed
 type stateTrackingStream struct {
-	*quic.Stream
+	quicapi.Stream
 
 	sendDatagram func([]byte) error
 	hasData      chan struct{}
@@ -38,7 +39,7 @@ type streamClearer interface {
 	clearStream(quic.StreamID)
 }
 
-func newStateTrackingStream(s *quic.Stream, clearer streamClearer, sendDatagram func([]byte) error) *stateTrackingStream {
+func newStateTrackingStream(s quicapi.Stream, clearer streamClearer, sendDatagram func([]byte) error) *stateTrackingStream {
 	t := &stateTrackingStream{
 		Stream:       s,
 		clearer:      clearer,
@@ -168,6 +169,6 @@ start:
 	goto start
 }
 
-func (s *stateTrackingStream) QUICStream() *quic.Stream {
+func (s *stateTrackingStream) QUICStream() quicapi.Stream {
 	return s.Stream
 }

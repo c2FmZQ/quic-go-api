@@ -18,6 +18,7 @@ import (
 	"golang.org/x/net/http/httpguts"
 
 	"github.com/c2FmZQ/quic-go-api"
+	quicapi "github.com/c2FmZQ/quic-go-api/api"
 	"github.com/c2FmZQ/quic-go-api/internal/protocol"
 )
 
@@ -47,7 +48,7 @@ type roundTripperWithCount struct {
 	cancel     context.CancelFunc
 	dialing    chan struct{} // closed as soon as quic.Dial(Early) returned
 	dialErr    error
-	conn       *quic.Conn
+	conn       quicapi.Conn
 	clientConn clientConn
 
 	useCount atomic.Int64
@@ -76,7 +77,7 @@ type Transport struct {
 	// connections for requests.
 	// If Dial is nil, a UDPConn will be created at the first request
 	// and will be reused for subsequent connections to other servers.
-	Dial func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (*quic.Conn, error)
+	Dial func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (quicapi.Conn, error)
 
 	// Enable support for HTTP/3 datagrams (RFC 9297).
 	// If a QUICConfig is set, datagram support also needs to be enabled on the QUIC layer by setting EnableDatagrams.
@@ -98,8 +99,8 @@ type Transport struct {
 	// However, if the user explicitly requested gzip it is not automatically uncompressed.
 	DisableCompression bool
 
-	StreamHijacker    func(FrameType, quic.ConnectionTracingID, *quic.Stream, error) (hijacked bool, err error)
-	UniStreamHijacker func(StreamType, quic.ConnectionTracingID, *quic.ReceiveStream, error) (hijacked bool)
+	StreamHijacker    func(FrameType, quic.ConnectionTracingID, quicapi.Stream, error) (hijacked bool, err error)
+	UniStreamHijacker func(StreamType, quic.ConnectionTracingID, quicapi.ReceiveStream, error) (hijacked bool)
 
 	Logger *slog.Logger
 
@@ -108,10 +109,10 @@ type Transport struct {
 	initOnce sync.Once
 	initErr  error
 
-	newClientConn func(*quic.Conn) clientConn
+	newClientConn func(quicapi.Conn) clientConn
 
 	clients   map[string]*roundTripperWithCount
-	transport *quic.Transport
+	transport quicapi.Transport
 }
 
 var (
@@ -124,7 +125,7 @@ var ErrNoCachedConn = errors.New("http3: no cached connection was available")
 
 func (t *Transport) init() error {
 	if t.newClientConn == nil {
-		t.newClientConn = func(conn *quic.Conn) clientConn {
+		t.newClientConn = func(conn quicapi.Conn) clientConn {
 			return newClientConn(
 				conn,
 				t.EnableDatagrams,
@@ -331,7 +332,7 @@ func (t *Transport) getClient(ctx context.Context, hostname string, onlyCached b
 	return cl, isReused, nil
 }
 
-func (t *Transport) dial(ctx context.Context, hostname string) (*quic.Conn, clientConn, error) {
+func (t *Transport) dial(ctx context.Context, hostname string) (quicapi.Conn, clientConn, error) {
 	var tlsConf *tls.Config
 	if t.TLSClientConfig == nil {
 		tlsConf = &tls.Config{}
@@ -356,9 +357,9 @@ func (t *Transport) dial(ctx context.Context, hostname string) (*quic.Conn, clie
 			if err != nil {
 				return nil, nil, err
 			}
-			t.transport = &quic.Transport{Conn: udpConn}
+			t.transport = &quicapi.TransportWrapper{Base: &quic.Transport{Conn: udpConn}}
 		}
-		dial = func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (*quic.Conn, error) {
+		dial = func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (quicapi.Conn, error) {
 			network := "udp"
 			udpAddr, err := t.resolveUDPAddr(ctx, network, addr)
 			if err != nil {
@@ -418,7 +419,7 @@ func (t *Transport) removeClient(hostname string) {
 //
 // Obtaining a ClientConn is only needed for more advanced use cases, such as
 // using Extended CONNECT for WebTransport or the various MASQUE protocols.
-func (t *Transport) NewClientConn(conn *quic.Conn) *ClientConn {
+func (t *Transport) NewClientConn(conn quicapi.Conn) *ClientConn {
 	return newClientConn(
 		conn,
 		t.EnableDatagrams,
@@ -445,8 +446,10 @@ func (t *Transport) Close() error {
 		if err := t.transport.Close(); err != nil {
 			return err
 		}
-		if err := t.transport.Conn.Close(); err != nil {
-			return err
+		if tr, ok := t.transport.(*quicapi.TransportWrapper); ok {
+			if err := tr.Base.Conn.Close(); err != nil {
+				return err
+			}
 		}
 		t.transport = nil
 	}

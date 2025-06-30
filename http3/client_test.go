@@ -13,6 +13,7 @@ import (
 
 	"github.com/quic-go/qpack"
 	"github.com/c2FmZQ/quic-go-api"
+	quicapi "github.com/c2FmZQ/quic-go-api/api"
 	"github.com/c2FmZQ/quic-go-api/quicvarint"
 
 	"github.com/stretchr/testify/assert"
@@ -529,7 +530,7 @@ func testClientStreamHijacking(t *testing.T, bidirectional, doHijack bool, strea
 	tr := &Transport{}
 	switch bidirectional {
 	case true:
-		tr.StreamHijacker = func(ft FrameType, id quic.ConnectionTracingID, _ *quic.Stream, e error) (hijacked bool, err error) {
+		tr.StreamHijacker = func(ft FrameType, id quic.ConnectionTracingID, _ quicapi.Stream, e error) (hijacked bool, err error) {
 			hijackChan <- hijackCall{ft: ft, connTracingID: id, e: e}
 			if !doHijack {
 				return false, errors.New("not hijacking")
@@ -537,7 +538,7 @@ func testClientStreamHijacking(t *testing.T, bidirectional, doHijack bool, strea
 			return true, nil
 		}
 	case false:
-		tr.UniStreamHijacker = func(st StreamType, id quic.ConnectionTracingID, rs *quic.ReceiveStream, e error) (hijacked bool) {
+		tr.UniStreamHijacker = func(st StreamType, id quic.ConnectionTracingID, rs quicapi.ReceiveStream, e error) (hijacked bool) {
 			hijackChan <- hijackCall{st: st, connTracingID: id, e: e}
 			return doHijack
 		}

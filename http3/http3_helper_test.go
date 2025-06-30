@@ -21,6 +21,7 @@ import (
 
 	"github.com/quic-go/qpack"
 	"github.com/c2FmZQ/quic-go-api"
+	quicapi "github.com/c2FmZQ/quic-go-api/api"
 	"github.com/c2FmZQ/quic-go-api/internal/protocol"
 
 	"github.com/stretchr/testify/require"
@@ -127,7 +128,7 @@ func generateLeafCert(ca *x509.Certificate, caPriv crypto.PrivateKey) (*x509.Cer
 func getTLSConfig() *tls.Config       { return tlsConfig.Clone() }
 func getTLSClientConfig() *tls.Config { return tlsClientConfig.Clone() }
 
-func newConnPair(t *testing.T) (client, server *quic.Conn) {
+func newConnPair(t *testing.T) (client, server quicapi.Conn) {
 	t.Helper()
 
 	ln, err := quic.ListenEarly(
@@ -154,10 +155,10 @@ func newConnPair(t *testing.T) (client, server *quic.Conn) {
 	case <-ctx.Done():
 		t.Fatal("timeout")
 	}
-	return cl, conn
+	return &quicapi.ConnWrapper{Base: cl}, &quicapi.ConnWrapper{Base: conn}
 }
 
-func newConnPairWithDatagrams(t *testing.T) (client, server *quic.Conn) {
+func newConnPairWithDatagrams(t *testing.T) (client, server quicapi.Conn) {
 	t.Helper()
 
 	ln, err := quic.ListenEarly(
@@ -185,7 +186,7 @@ func newConnPairWithDatagrams(t *testing.T) (client, server *quic.Conn) {
 	case <-ctx.Done():
 		t.Fatal("timeout")
 	}
-	return cl, conn
+	return &quicapi.ConnWrapper{Base: cl}, &quicapi.ConnWrapper{Base: conn}
 }
 
 type quicReceiveStream interface {

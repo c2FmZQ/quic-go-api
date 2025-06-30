@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/c2FmZQ/quic-go-api"
+	quicapi "github.com/c2FmZQ/quic-go-api/api"
 	"github.com/c2FmZQ/quic-go-api/internal/testdata"
 	"github.com/c2FmZQ/quic-go-api/quicvarint"
 
@@ -490,12 +491,12 @@ func testServerHijackBidirectionalStream(t *testing.T, bidirectional bool, doHij
 	hijackChan := make(chan hijackCall, 1)
 	testDone := make(chan struct{})
 	s := &Server{
-		StreamHijacker: func(ft FrameType, connTracingID quic.ConnectionTracingID, _ *quic.Stream, e error) (hijacked bool, err error) {
+		StreamHijacker: func(ft FrameType, connTracingID quic.ConnectionTracingID, _ quicapi.Stream, e error) (hijacked bool, err error) {
 			defer close(testDone)
 			hijackChan <- hijackCall{ft: ft, connTracingID: connTracingID, e: e}
 			return doHijack, hijackErr
 		},
-		UniStreamHijacker: func(st StreamType, connTracingID quic.ConnectionTracingID, _ *quic.ReceiveStream, err error) bool {
+		UniStreamHijacker: func(st StreamType, connTracingID quic.ConnectionTracingID, _ quicapi.ReceiveStream, err error) bool {
 			defer close(testDone)
 			hijackChan <- hijackCall{st: st, connTracingID: connTracingID, e: err}
 			return doHijack
@@ -580,7 +581,7 @@ func testServerAltSvcFromListenersAndConns(t *testing.T, versions []quic.Version
 	done1 := make(chan struct{})
 	go func() {
 		defer close(done1)
-		s.ServeListener(ln1)
+		s.ServeListener(&quicapi.EarlyListenerWrapper{Base: ln1})
 	}()
 	time.Sleep(scaleDuration(10 * time.Millisecond))
 	altSvc, ok := getAltSvc(s)
@@ -635,7 +636,7 @@ func TestServerAltSvcFromPort(t *testing.T) {
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
-		s.ServeListener(ln)
+		s.ServeListener(&quicapi.EarlyListenerWrapper{Base: ln})
 	}()
 	time.Sleep(scaleDuration(10 * time.Millisecond))
 
@@ -655,7 +656,7 @@ func TestServerAltSvcFromPort(t *testing.T) {
 }
 
 type unixSocketListener struct {
-	*quic.EarlyListener
+	quicapi.EarlyListener
 }
 
 func (l *unixSocketListener) Addr() net.Addr {
@@ -687,7 +688,7 @@ func testServerAltSvcFromUnixSocket(t *testing.T, addr string) (altSvc string, o
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
-		s.ServeListener(&unixSocketListener{EarlyListener: ln})
+		s.ServeListener(&unixSocketListener{EarlyListener: &quicapi.EarlyListenerWrapper{Base: ln}})
 	}()
 	time.Sleep(scaleDuration(10 * time.Millisecond))
 
