@@ -569,7 +569,7 @@ func TestServerAltSvcFromListenersAndConns(t *testing.T) {
 }
 
 func testServerAltSvcFromListenersAndConns(t *testing.T, versions []quic.Version) {
-	ln1, err := quic.ListenEarly(newUDPConnLocalhost(t), getTLSConfig(), nil)
+	ln1, err := quicapi.ListenEarly(newUDPConnLocalhost(t), getTLSConfig(), nil)
 	require.NoError(t, err)
 	port1 := ln1.Addr().(*net.UDPAddr).Port
 
@@ -581,7 +581,7 @@ func testServerAltSvcFromListenersAndConns(t *testing.T, versions []quic.Version
 	done1 := make(chan struct{})
 	go func() {
 		defer close(done1)
-		s.ServeListener(&quicapi.EarlyListenerWrapper{Base: ln1})
+		s.ServeListener(ln1)
 	}()
 	time.Sleep(scaleDuration(10 * time.Millisecond))
 	altSvc, ok := getAltSvc(s)
@@ -631,12 +631,12 @@ func TestServerAltSvcFromPort(t *testing.T) {
 	_, ok := getAltSvc(s)
 	require.False(t, ok)
 
-	ln, err := quic.ListenEarly(newUDPConnLocalhost(t), getTLSConfig(), nil)
+	ln, err := quicapi.ListenEarly(newUDPConnLocalhost(t), getTLSConfig(), nil)
 	require.NoError(t, err)
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
-		s.ServeListener(&quicapi.EarlyListenerWrapper{Base: ln})
+		s.ServeListener(ln)
 	}()
 	time.Sleep(scaleDuration(10 * time.Millisecond))
 
@@ -677,7 +677,7 @@ func TestServerAltSvcFromUnixSocket(t *testing.T) {
 }
 
 func testServerAltSvcFromUnixSocket(t *testing.T, addr string) (altSvc string, ok bool) {
-	ln, err := quic.ListenEarly(newUDPConnLocalhost(t), testdata.GetTLSConfig(), nil)
+	ln, err := quicapi.ListenEarly(newUDPConnLocalhost(t), testdata.GetTLSConfig(), nil)
 	require.NoError(t, err)
 
 	var logBuf bytes.Buffer
@@ -688,7 +688,7 @@ func testServerAltSvcFromUnixSocket(t *testing.T, addr string) (altSvc string, o
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
-		s.ServeListener(&unixSocketListener{EarlyListener: &quicapi.EarlyListenerWrapper{Base: ln}})
+		s.ServeListener(&unixSocketListener{EarlyListener: ln})
 	}()
 	time.Sleep(scaleDuration(10 * time.Millisecond))
 

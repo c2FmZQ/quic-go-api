@@ -19,10 +19,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/quic-go/qpack"
 	"github.com/c2FmZQ/quic-go-api"
 	quicapi "github.com/c2FmZQ/quic-go-api/api"
 	"github.com/c2FmZQ/quic-go-api/internal/protocol"
+	"github.com/quic-go/qpack"
 
 	"github.com/stretchr/testify/require"
 )
@@ -131,7 +131,7 @@ func getTLSClientConfig() *tls.Config { return tlsClientConfig.Clone() }
 func newConnPair(t *testing.T) (client, server quicapi.Conn) {
 	t.Helper()
 
-	ln, err := quic.ListenEarly(
+	ln, err := quicapi.ListenEarly(
 		newUDPConnLocalhost(t),
 		getTLSConfig(),
 		&quic.Config{
@@ -143,7 +143,7 @@ func newConnPair(t *testing.T) (client, server quicapi.Conn) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	cl, err := quic.DialEarly(ctx, newUDPConnLocalhost(t), ln.Addr(), getTLSClientConfig(), &quic.Config{})
+	cl, err := quicapi.DialEarly(ctx, newUDPConnLocalhost(t), ln.Addr(), getTLSClientConfig(), &quic.Config{})
 	require.NoError(t, err)
 	t.Cleanup(func() { cl.CloseWithError(0, "") })
 
@@ -155,13 +155,13 @@ func newConnPair(t *testing.T) (client, server quicapi.Conn) {
 	case <-ctx.Done():
 		t.Fatal("timeout")
 	}
-	return &quicapi.ConnWrapper{Base: cl}, &quicapi.ConnWrapper{Base: conn}
+	return cl, conn
 }
 
 func newConnPairWithDatagrams(t *testing.T) (client, server quicapi.Conn) {
 	t.Helper()
 
-	ln, err := quic.ListenEarly(
+	ln, err := quicapi.ListenEarly(
 		newUDPConnLocalhost(t),
 		getTLSConfig(),
 		&quic.Config{
@@ -174,7 +174,7 @@ func newConnPairWithDatagrams(t *testing.T) (client, server quicapi.Conn) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	cl, err := quic.DialEarly(ctx, newUDPConnLocalhost(t), ln.Addr(), getTLSClientConfig(), &quic.Config{EnableDatagrams: true})
+	cl, err := quicapi.DialEarly(ctx, newUDPConnLocalhost(t), ln.Addr(), getTLSClientConfig(), &quic.Config{EnableDatagrams: true})
 	require.NoError(t, err)
 	t.Cleanup(func() { cl.CloseWithError(0, "") })
 
@@ -186,7 +186,7 @@ func newConnPairWithDatagrams(t *testing.T) (client, server quicapi.Conn) {
 	case <-ctx.Done():
 		t.Fatal("timeout")
 	}
-	return &quicapi.ConnWrapper{Base: cl}, &quicapi.ConnWrapper{Base: conn}
+	return cl, conn
 }
 
 type quicReceiveStream interface {

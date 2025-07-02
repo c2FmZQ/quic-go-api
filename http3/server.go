@@ -336,21 +336,17 @@ func (s *Server) setupListenerForConn(tlsConf *tls.Config, conn net.PacketConn) 
 
 	var ln QUICListener
 	var err error
-	var ln2 *quic.EarlyListener
 	if conn == nil {
 		addr := s.Addr
 		if addr == "" {
 			addr = ":https"
 		}
-		ln2, err = quic.ListenAddrEarly(addr, baseConf, quicConf)
+		ln, err = quicapi.ListenAddrEarly(addr, baseConf, quicConf)
 	} else {
-		ln2, err = quic.ListenEarly(conn, baseConf, quicConf)
+		ln, err = quicapi.ListenEarly(conn, baseConf, quicConf)
 	}
 	if err != nil {
 		return nil, err
-	}
-	if ln2 != nil {
-		ln = &quicapi.EarlyListenerWrapper{Base: ln2}
 	}
 	if err := s.addListener(&ln, true); err != nil {
 		return nil, err
