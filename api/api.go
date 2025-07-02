@@ -111,38 +111,38 @@ func (w *TransportWrapper) Close() error {
 	return w.Base.Close()
 }
 
-func (w *TransportWrapper) Dial(a1 context.Context, a2 net.Addr, a3 *tls.Config, a4 *quic.Config) (r1 Conn, r2 error) {
-	var t1 *quic.Conn
-	t1, r2 = w.Base.Dial(a1, a2, a3, a4)
-	if t1 != nil {
-		r1 = &ConnWrapper{Base: t1}
+func (w *TransportWrapper) Dial(a1 context.Context, a2 net.Addr, a3 *tls.Config, a4 *quic.Config) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = w.Base.Dial(a1, a2, a3, a4)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *TransportWrapper) DialEarly(a1 context.Context, a2 net.Addr, a3 *tls.Config, a4 *quic.Config) (r1 Conn, r2 error) {
-	var t1 *quic.Conn
-	t1, r2 = w.Base.DialEarly(a1, a2, a3, a4)
-	if t1 != nil {
-		r1 = &ConnWrapper{Base: t1}
+func (w *TransportWrapper) DialEarly(a1 context.Context, a2 net.Addr, a3 *tls.Config, a4 *quic.Config) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = w.Base.DialEarly(a1, a2, a3, a4)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *TransportWrapper) Listen(a1 *tls.Config, a2 *quic.Config) (r1 Listener, r2 error) {
-	var t1 *quic.Listener
-	t1, r2 = w.Base.Listen(a1, a2)
-	if t1 != nil {
-		r1 = &ListenerWrapper{Base: t1}
+func (w *TransportWrapper) Listen(a1 *tls.Config, a2 *quic.Config) (r0 Listener, r1 error) {
+	var t0 *quic.Listener
+	t0, r1 = w.Base.Listen(a1, a2)
+	if t0 != nil {
+		r0 = &ListenerWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *TransportWrapper) ListenEarly(a1 *tls.Config, a2 *quic.Config) (r1 EarlyListener, r2 error) {
-	var t1 *quic.EarlyListener
-	t1, r2 = w.Base.ListenEarly(a1, a2)
-	if t1 != nil {
-		r1 = &EarlyListenerWrapper{Base: t1}
+func (w *TransportWrapper) ListenEarly(a1 *tls.Config, a2 *quic.Config) (r0 EarlyListener, r1 error) {
+	var t0 *quic.EarlyListener
+	t0, r1 = w.Base.ListenEarly(a1, a2)
+	if t0 != nil {
+		r0 = &EarlyListenerWrapper{Base: t0}
 	}
 	return
 }
@@ -162,11 +162,11 @@ type ListenerWrapper struct {
 	Base *quic.Listener
 }
 
-func (w *ListenerWrapper) Accept(a1 context.Context) (r1 Conn, r2 error) {
-	var t1 *quic.Conn
-	t1, r2 = w.Base.Accept(a1)
-	if t1 != nil {
-		r1 = &ConnWrapper{Base: t1}
+func (w *ListenerWrapper) Accept(a1 context.Context) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = w.Base.Accept(a1)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
 	}
 	return
 }
@@ -186,11 +186,11 @@ type EarlyListenerWrapper struct {
 	Base *quic.EarlyListener
 }
 
-func (w *EarlyListenerWrapper) Accept(a1 context.Context) (r1 Conn, r2 error) {
-	var t1 *quic.Conn
-	t1, r2 = w.Base.Accept(a1)
-	if t1 != nil {
-		r1 = &ConnWrapper{Base: t1}
+func (w *EarlyListenerWrapper) Accept(a1 context.Context) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = w.Base.Accept(a1)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
 	}
 	return
 }
@@ -210,29 +210,29 @@ type ConnWrapper struct {
 	Base *quic.Conn
 }
 
-func (w *ConnWrapper) AcceptStream(a1 context.Context) (r1 Stream, r2 error) {
-	var t1 *quic.Stream
-	t1, r2 = w.Base.AcceptStream(a1)
-	if t1 != nil {
-		r1 = &StreamWrapper{Base: t1}
+func (w *ConnWrapper) AcceptStream(a1 context.Context) (r0 Stream, r1 error) {
+	var t0 *quic.Stream
+	t0, r1 = w.Base.AcceptStream(a1)
+	if t0 != nil {
+		r0 = &StreamWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *ConnWrapper) AcceptUniStream(a1 context.Context) (r1 ReceiveStream, r2 error) {
-	var t1 *quic.ReceiveStream
-	t1, r2 = w.Base.AcceptUniStream(a1)
-	if t1 != nil {
-		r1 = &ReceiveStreamWrapper{Base: t1}
+func (w *ConnWrapper) AcceptUniStream(a1 context.Context) (r0 ReceiveStream, r1 error) {
+	var t0 *quic.ReceiveStream
+	t0, r1 = w.Base.AcceptUniStream(a1)
+	if t0 != nil {
+		r0 = &ReceiveStreamWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *ConnWrapper) AddPath(a1 Transport) (r1 Path, r2 error) {
-	var t1 *quic.Path
-	t1, r2 = w.Base.AddPath(a1.(*TransportWrapper).Base)
-	if t1 != nil {
-		r1 = &PathWrapper{Base: t1}
+func (w *ConnWrapper) AddPath(a1 Transport) (r0 Path, r1 error) {
+	var t0 *quic.Path
+	t0, r1 = w.Base.AddPath(a1.(*TransportWrapper).Base)
+	if t0 != nil {
+		r0 = &PathWrapper{Base: t0}
 	}
 	return
 }
@@ -257,47 +257,47 @@ func (w *ConnWrapper) LocalAddr() net.Addr {
 	return w.Base.LocalAddr()
 }
 
-func (w *ConnWrapper) NextConnection(a1 context.Context) (r1 Conn, r2 error) {
-	var t1 *quic.Conn
-	t1, r2 = w.Base.NextConnection(a1)
-	if t1 != nil {
-		r1 = &ConnWrapper{Base: t1}
+func (w *ConnWrapper) NextConnection(a1 context.Context) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = w.Base.NextConnection(a1)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *ConnWrapper) OpenStream() (r1 Stream, r2 error) {
-	var t1 *quic.Stream
-	t1, r2 = w.Base.OpenStream()
-	if t1 != nil {
-		r1 = &StreamWrapper{Base: t1}
+func (w *ConnWrapper) OpenStream() (r0 Stream, r1 error) {
+	var t0 *quic.Stream
+	t0, r1 = w.Base.OpenStream()
+	if t0 != nil {
+		r0 = &StreamWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *ConnWrapper) OpenStreamSync(a1 context.Context) (r1 Stream, r2 error) {
-	var t1 *quic.Stream
-	t1, r2 = w.Base.OpenStreamSync(a1)
-	if t1 != nil {
-		r1 = &StreamWrapper{Base: t1}
+func (w *ConnWrapper) OpenStreamSync(a1 context.Context) (r0 Stream, r1 error) {
+	var t0 *quic.Stream
+	t0, r1 = w.Base.OpenStreamSync(a1)
+	if t0 != nil {
+		r0 = &StreamWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *ConnWrapper) OpenUniStream() (r1 SendStream, r2 error) {
-	var t1 *quic.SendStream
-	t1, r2 = w.Base.OpenUniStream()
-	if t1 != nil {
-		r1 = &SendStreamWrapper{Base: t1}
+func (w *ConnWrapper) OpenUniStream() (r0 SendStream, r1 error) {
+	var t0 *quic.SendStream
+	t0, r1 = w.Base.OpenUniStream()
+	if t0 != nil {
+		r0 = &SendStreamWrapper{Base: t0}
 	}
 	return
 }
 
-func (w *ConnWrapper) OpenUniStreamSync(a1 context.Context) (r1 SendStream, r2 error) {
-	var t1 *quic.SendStream
-	t1, r2 = w.Base.OpenUniStreamSync(a1)
-	if t1 != nil {
-		r1 = &SendStreamWrapper{Base: t1}
+func (w *ConnWrapper) OpenUniStreamSync(a1 context.Context) (r0 SendStream, r1 error) {
+	var t0 *quic.SendStream
+	t0, r1 = w.Base.OpenUniStreamSync(a1)
+	if t0 != nil {
+		r0 = &SendStreamWrapper{Base: t0}
 	}
 	return
 }
@@ -432,4 +432,84 @@ func (w *PathWrapper) Probe(a1 context.Context) error {
 
 func (w *PathWrapper) Switch() error {
 	return w.Base.Switch()
+}
+
+// Dial is an auto-generated wrapper for [quic.Dial]
+func Dial(a0 context.Context, a1 net.PacketConn, a2 net.Addr, a3 *tls.Config, a4 *quic.Config) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = quic.Dial(a0, a1, a2, a3, a4)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
+	}
+	return
+}
+
+// DialEarly is an auto-generated wrapper for [quic.DialEarly]
+func DialEarly(a0 context.Context, a1 net.PacketConn, a2 net.Addr, a3 *tls.Config, a4 *quic.Config) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = quic.DialEarly(a0, a1, a2, a3, a4)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
+	}
+	return
+}
+
+// DialAddr is an auto-generated wrapper for [quic.DialAddr]
+func DialAddr(a0 context.Context, a1 string, a2 *tls.Config, a3 *quic.Config) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = quic.DialAddr(a0, a1, a2, a3)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
+	}
+	return
+}
+
+// DialAddrEarly is an auto-generated wrapper for [quic.DialAddrEarly]
+func DialAddrEarly(a0 context.Context, a1 string, a2 *tls.Config, a3 *quic.Config) (r0 Conn, r1 error) {
+	var t0 *quic.Conn
+	t0, r1 = quic.DialAddrEarly(a0, a1, a2, a3)
+	if t0 != nil {
+		r0 = &ConnWrapper{Base: t0}
+	}
+	return
+}
+
+// Listen is an auto-generated wrapper for [quic.Listen]
+func Listen(a0 net.PacketConn, a1 *tls.Config, a2 *quic.Config) (r0 Listener, r1 error) {
+	var t0 *quic.Listener
+	t0, r1 = quic.Listen(a0, a1, a2)
+	if t0 != nil {
+		r0 = &ListenerWrapper{Base: t0}
+	}
+	return
+}
+
+// ListenEarly is an auto-generated wrapper for [quic.ListenEarly]
+func ListenEarly(a0 net.PacketConn, a1 *tls.Config, a2 *quic.Config) (r0 EarlyListener, r1 error) {
+	var t0 *quic.EarlyListener
+	t0, r1 = quic.ListenEarly(a0, a1, a2)
+	if t0 != nil {
+		r0 = &EarlyListenerWrapper{Base: t0}
+	}
+	return
+}
+
+// ListenAddr is an auto-generated wrapper for [quic.ListenAddr]
+func ListenAddr(a0 string, a1 *tls.Config, a2 *quic.Config) (r0 Listener, r1 error) {
+	var t0 *quic.Listener
+	t0, r1 = quic.ListenAddr(a0, a1, a2)
+	if t0 != nil {
+		r0 = &ListenerWrapper{Base: t0}
+	}
+	return
+}
+
+// ListenAddrEarly is an auto-generated wrapper for [quic.ListenAddrEarly]
+func ListenAddrEarly(a0 string, a1 *tls.Config, a2 *quic.Config) (r0 EarlyListener, r1 error) {
+	var t0 *quic.EarlyListener
+	t0, r1 = quic.ListenAddrEarly(a0, a1, a2)
+	if t0 != nil {
+		r0 = &EarlyListenerWrapper{Base: t0}
+	}
+	return
 }
